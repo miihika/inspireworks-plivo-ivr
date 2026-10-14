@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>InspireWorks IVR Demo</title>
+<style>
+body{font:16px system-ui,sans-serif;background:#edf2f7;color:#183044;margin:0;padding:48px 20px}main{max-width:640px;margin:auto;background:white;padding:36px;border-radius:18px;box-shadow:0 12px 40px #18304415}h1{margin:8px 0 12px}.brand{color:#327568;font-weight:700}p{line-height:1.6;color:#526575}label{display:block;font-weight:600;margin:24px 0 8px}input{box-sizing:border-box;width:100%;padding:13px;border:1px solid #bdcbd6;border-radius:8px;font:inherit}button{margin-top:16px;padding:13px 24px;border:0;border-radius:8px;background:#176a59;color:white;font:inherit;cursor:pointer}button:disabled{opacity:.5}ol{line-height:1.9;padding-left:22px}#status{padding:12px;background:#f1f5f8;border-radius:8px;white-space:pre-wrap}.small{font-size:13px;overflow-wrap:anywhere}
+</style></head>
+<body><main data-token="{{ token }}"><div class="brand">INSPIREWORKS · PLIVO VOICE</div><h1>Outbound IVR demo</h1><p>Call your phone and explore birthdate authentication, English and Spanish menus, audio playback, and associate forwarding.</p>
+<form id="call"><label for="to">Receiver phone number</label><input id="to" type="tel" value="{{ target }}" placeholder="Phone number with country code" required><button id="button">Start demo call</button></form>
+<p id="status" role="status" aria-live="polite">Ready. Start a call and answer your phone.</p>
+<ol><li>Enter your four-digit birthdate in DDMM format.</li><li>Choose 1 for English or 2 for Spanish.</li><li>Choose 1 for audio or 2 for an associate.</li></ol>
+<p class="small">Public callback URL: {{ base or 'Not configured. Set PUBLIC_BASE_URL in .env and restart.' }}</p><p class="small">For the video, enter an incorrect OTP first, then the correct one. Audio playback returns to the action menu.</p>
+</main><script>
+document.querySelector('#call').addEventListener('submit',async e=>{e.preventDefault();const b=document.querySelector('#button'),s=document.querySelector('#status');b.disabled=true;s.textContent='Requesting call…';try{const r=await fetch('/api/call',{method:'POST',headers:{'Content-Type':'application/json','X-Demo-Token':document.querySelector('main').dataset.token},body:JSON.stringify({to:document.querySelector('#to').value})});const d=await r.json();s.textContent=d.error||d.message+(d.request_uuid?'\nRequest: '+d.request_uuid:'');}catch(e){s.textContent='Unable to reach the application. Check the server.';}finally{b.disabled=false;}});
+</script></body></html>
